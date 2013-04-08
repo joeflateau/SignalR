@@ -9,13 +9,13 @@ function Get-FileName($line)
 New-Item $logs\LogAnalysis -type directory -force
 
 # UnobservedTask exceptions
-gci -recurse $logs\*.log | select-string "unobserved" | group Filename | select Name | out-string -width 1000 > $logs\LogAnalysis\unobserved_exceptions.txt
+gci -recurse $logs\*.log | select-string "unobserved" | group Filename | select Name | out-string -width 1000 > $logs\LogAnalysis\unobserved_exceptions.log
 
 # ObjectDisposed exceptions
-gci -recurse $logs\*.log | select-string "disposed" | group Filename | select Name | out-string -width 1000 > $logs\LogAnalysis\ode_exceptions.txt
+gci -recurse $logs\*.log | select-string "disposed" | group Filename | select Name | out-string -width 1000 > $logs\LogAnalysis\ode_exceptions.log
 
 # Network errors exceptions
-gci -recurse $logs\*.log | select-string "unexpected" | group Filename | select Name | out-string -width 1000 > $logs\LogAnalysis\unexpected.txt
+gci -recurse $logs\*.log | select-string "unexpected" | group Filename | select Name | out-string -width 1000 > $logs\LogAnalysis\unexpected.log
 
 # Connection Forcibly closed Errors
-gci -recurse $logs\*.log | select-string "An existing connection was forcibly closed" | group Filename | select Name | out-string -width 1000 > $logs\LogAnalysis\connection_closed.txt
+gci -recurse $logs\*.log | select-string "An existing connection was forcibly closed" | group Filename | select Name | out-string -width 1000 > $logs\LogAnalysis\connection_closed.log
