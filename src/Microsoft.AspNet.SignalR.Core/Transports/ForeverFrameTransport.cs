@@ -15,6 +15,9 @@ namespace Microsoft.AspNet.SignalR.Transports
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Disposable fields are disposed from a different method")]
     public class ForeverFrameTransport : ForeverTransport
     {
+        /// <summary>
+        /// HTML/JavaScript code written to the iframe to start the ForeverFrameTransport
+        /// </summary>
         private const string _initFormat = @"<html>
                                              <head>
                                              <script>
@@ -54,14 +57,15 @@ namespace Microsoft.AspNet.SignalR.Transports
                                              </script></head>
                                              <body>";
 
-        private static readonly Regex shrink_ray = new Regex(@"(^|\n|\r)+\s+|\s+(&|\n\r)+|//.*");
+        /// <summary>
+        /// Matches whitespace at beginning and end of lines, new lines, single-line comments
+        /// </summary>
+        private static readonly Regex _whiteSpaceAndCommentsRegex = new Regex(@"(^|\n|\r)+\s+|\s+(&|\n\r)+|//.*");
 
-        private static readonly string smaller_init = GetSmallerInit();
-
-        private static string GetSmallerInit()
-        {
-            return shrink_ray.Replace(_initFormat, "");
-        }
+        /// <summary>
+        /// <see cref="_initFormat">_initFormat</see> with unneccessary whitespace and comments removed
+        /// </summary>
+        private static readonly string _smallerInitFormat = _whiteSpaceAndCommentsRegex.Replace(_initFormat, "");
 
         private HTMLTextWriter _htmlOutputWriter;
 
@@ -127,7 +131,7 @@ namespace Microsoft.AspNet.SignalR.Transports
             }
 
             // string.Format doesn't like all of the braces in Javascript, this works for our purposes
-            string initScript = smaller_init.Replace("{0}", frameId.ToString(CultureInfo.InvariantCulture));
+            string initScript = _smallerInitFormat.Replace("{0}", frameId.ToString(CultureInfo.InvariantCulture));
 
             var context = new ForeverFrameTransportContext(this, initScript);
 
